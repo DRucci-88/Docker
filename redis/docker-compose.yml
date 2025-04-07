@@ -10,7 +10,7 @@ services:
       - redis-data:/data
     networks:
       - redis-net
-    restart: always
+    # restart: always
 
   # redisinsight:
   #   image: redislabs/redisinsight:latest

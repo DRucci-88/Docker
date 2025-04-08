@@ -3,7 +3,7 @@ wsl --install
 Docker purpose
 
 user: rucci
-password: 12345678
+password: rucci
 
 Provisioning the new WSL instance Ubuntu
 This might take a while...

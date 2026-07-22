@@ -1,29 +1,63 @@
-version: '3.8'
-
 services:
   redis:
-    image: redis:7.2
+    image: redis:8.2-alpine
     container_name: redis
+
+    command:
+      - redis-server
+      - --appendonly yes
+      - --aclfile /usr/local/etc/redis/users.acl
+
     ports:
       - "6379:6379"
+
     volumes:
       - redis-data:/data
-    networks:
-      - redis-net
-    # restart: always
+      - ./users.acl:/usr/local/etc/redis/users.acl
 
-  # redisinsight:
-  #   image: redislabs/redisinsight:latest
-  #   container_name: redisinsight
-  #   ports:
-  #     - "8001:8001"
-  #   networks:
-  #     - redis-net
-  #   restart: always
+    networks:
+      - redis_network
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "redis-cli",
+          "--user",
+          "redis",
+          "-a",
+          "12345678",
+          "PING"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    restart: unless-stopped
+
+  redisinsight:
+    image: redis/redisinsight:3.8
+    container_name: redisinsight
+
+    ports:
+      - "5540:5540"
+
+    volumes:
+      - redisinsight-data:/data
+
+    depends_on:
+      redis:
+        condition: service_healthy
+
+    networks:
+      - redis_network
+
+    restart: unless-stopped
 
 volumes:
   redis-data:
+  redisinsight-data:
 
 networks:
-  redis-net:
+  redis_network:
     driver: bridge

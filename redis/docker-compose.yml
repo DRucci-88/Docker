@@ -12,7 +12,7 @@ services:
       - "6379:6379"
 
     volumes:
-      - redis-data:/data
+      - redis_data:/data
       - ./users.acl:/usr/local/etc/redis/users.acl
 
     networks:
@@ -43,7 +43,7 @@ services:
       - "5540:5540"
 
     volumes:
-      - redisinsight-data:/data
+      - redisinsight_data:/data
 
     depends_on:
       redis:
@@ -55,8 +55,12 @@ services:
     restart: unless-stopped
 
 volumes:
-  redis-data:
-  redisinsight-data:
+  redis_data:
+    name: redis_data
+    external: true
+  redisinsight_data:
+    name: redisinsight_data
+    external: true
 
 networks:
   redis_network:

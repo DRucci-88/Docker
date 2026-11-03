@@ -35,3 +35,5 @@ services:
 
 volumes:
   postgres17_data:
+    name: postgres17_data
+    external: true
